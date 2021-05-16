@@ -16,8 +16,20 @@
                 </v-app-bar-title>
             </div>
 
-            <v-btn to="/about" color="orange darken-1" style="margin-left: 2px; margin-right: 2px">Browse</v-btn>
-            <v-btn to="/" color="orange darken-1" style="margin-left: 2px; margin-right: 2px">Following</v-btn>
+            <v-btn
+                to="/about"
+                :disabled="!isAuthenticated"
+                color="orange darken-1"
+                style="margin-left: 2px; margin-right: 2px"
+                >Browse</v-btn
+            >
+            <v-btn
+                to="/"
+                :disabled="!isAuthenticated"
+                color="orange darken-1"
+                style="margin-left: 2px; margin-right: 2px"
+                >Following</v-btn
+            >
 
             <v-spacer></v-spacer>
 
@@ -46,7 +58,7 @@ export default {
     data: () => ({}),
     computed: {
         isAuthenticated() {
-            return this.$store.state.authenticated;
+            return !!this.$store.state.token;
         },
     },
     methods: {

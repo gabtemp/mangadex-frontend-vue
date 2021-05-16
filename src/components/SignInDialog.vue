@@ -9,35 +9,52 @@
             </v-card-title>
             <v-card-text>
                 <v-container>
-                    <v-row>
-                        <v-col cols="12">
-                            <v-text-field label="Email*" required></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                            <v-text-field label="Password*" type="password" required></v-text-field>
-                        </v-col>
-                    </v-row>
+                    <v-form ref="form" v-model="valid" lazy-validation>
+                        <v-text-field v-model="username" label="Username" required></v-text-field>
+                        <v-text-field v-model="password" label="Password" type="password" required></v-text-field>
+                    </v-form>
                 </v-container>
-                <small>*indicates required field</small>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="orange darken-1" text @click="dialog = false">Close</v-btn>
-                <v-btn color="orange darken-1" text @click="signIn">Log In</v-btn>
+                <v-btn :disabled="!valid" color="orange darken-1" text @click="signIn">Log In</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
 
 <script>
+import * as axios from 'axios';
+
 export default {
     data: () => ({
+        valid: false,
         dialog: false,
+        username: '',
+        password: '',
     }),
     methods: {
         signIn() {
             this._data.dialog = false;
-            this.$store.commit('login');
+
+            axios
+                .post(`${process.env.VUE_APP_MANGADEX_BASEURL}/auth/login`, {
+                    username: this._data.username,
+                    password: this._data.password,
+                })
+                .then((res) => {
+                    console.log(res.status);
+                    if (res.data.result === 'ok') {
+                        this.$store.commit('login', res.data.token);
+                    } else {
+                        // TODO: Show error
+                    }
+                })
+                .catch((error) => {
+                    // TODO: Show error
+                    console.log(error);
+                });
         },
     },
 };

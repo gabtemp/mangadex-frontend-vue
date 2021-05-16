@@ -6,11 +6,18 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        authenticated: false,
+        token: undefined,
+        refresh: undefined,
     },
     mutations: {
-        login: (state) => (state.authenticated = true),
-        logout: (state) => (state.authenticated = false),
+        login: (state, token) => {
+            state.token = token.session;
+            state.refresh = token.refresh;
+        },
+        logout: (state) => {
+            state.token = undefined;
+            state.refresh = undefined;
+        },
     },
     actions: {},
     modules: {},
